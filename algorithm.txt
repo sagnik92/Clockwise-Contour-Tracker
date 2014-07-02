@@ -1,0 +1,88 @@
+
+
+                                                                     
+                                                                     
+                                                                     
+                                             
+
+* Six markers are used...p1 and p2 indicate the row and column index of the current cell which has value '1'.
+  Now we need to scan the 8 neighbours of this cell in clockwise circular manner staring from the cell at clockwise 45deg along the direction vector from the previous cell which contained a '1'.
+  For this we use 2 markers m1 and m2 to indicate the row and column index of the cell from where the circular scan is to start.
+* Two markers i1 and i2 hold the value of the row and column index where the 'circular border tracking' starts and they determine the termination of the tracking logic.
+* A Flag variable is used to determine the status of the process.
+* A 'count1' counter (optional) is used to make sure that the iterations do not enter an infinite loop in any case,even if there is a logical error..coz count1 can have a maximum value of (row x column)
+* A 'count' counter is used to limit the circular scan of the 8 neighbours so that there's no overlapping scans.
+  two variables temp1 and temp2 are also used to hold the temporary values of m1 and m2 (t1=m1 and t2=m2)..while the values of m1 and m2 get modified and aftr modification,p1 and p2 are assigned the initial values of m1 and m2 which are strored in temp1 and temp2.(p1=temp1 and p2=temp2)
+
+1.Start scanning linearly using nested for loops-
+  a)print mat[i][j] if mat[i][j]=1 (this condition will trigger the circular scan and border tracking process)
+
+  b)set m1=i-1 and m2=j-1 ([i-1][j-1] is the 45 degree cell from the linear vector from [i][j-1] to [i][j],where the 1st '1' is found)
+    Thus m1=i-1 and m2=j-1 is the first cell from where circular scan will start.
+
+  c)set p1=i and p2=j (position where 1st one is found is marked)
+    
+  d)set i1=i and i2=j (marks the starting position of border scanning and hence determines the terminating point of the scanning process)
+  
+  e)set flag=1 and increment count1 by 1
+
+
+2.flag=1 is the terminating condition for the nested for loops i.e it stops the linear scanning process.
+
+3.If flag!=1 (i.e 0) it means that the linear scan has completed scanning the entire matrix and has found no '1's.
+
+4.Otherwise flag=1 triggers the circular border tracking process.
+  The outermost while loop conditions determine the conditions for entire border tracking to continue.
+  flag>0 ensures circular scan is not triggered anyhow in an all '0' matrix.
+  count1<=(row x column)  ensures that even if there is a logical error in the loop,the prog does not enter an infinite loop,
+  and iterates maximum (row x column) times.This condition is optional and used for debugging convinience.
+
+  4.1. Within the outer while loop 'count' is initially set to 0.
+  
+  4.2.  If ---> mat[m1][m2]=1,then there is no need 2 start clckwise circular scan of the 8 neighbours of mat[p1][p2] (where previously '1' was found)
+                *Set temp1=m1 and temp2=m2. (postion of the new position where '1' is found is marked.
+                *Set flag=2 and increment 'count1'..
+  
+              4.2.1.If ---> m1=i1 and m2=i2,set flag=3. This flag value breaks the outermost while loop..i.e it terminates the entire border tracking process.
+                    This flag value also indicates a successful tracking.
+                    Else--> mat[m1][m2] is printed.
+       
+        Else --> Circular scan of the 8 neighbours of mat[p1][p2] starts using inner while loop...and continues till count=7
+                 Rows p1-1 to p1+1 and Columns p2-1 to p2+1 contains the 8 neighbours.
+                 'count' is incremented after every cell is scanned.
+ 
+              4.2.1.If --->  mat[m1][m2]=1..
+                           * temp1=m1 and temp2=m2 (once a '1' is found in circular scan,the position is temporarily marked)
+                             Scanning of that particular 8 neighbours should now stop.
+                           * Set flag=2 and increment count.
+
+          
+                           * If --->m1=i1 and m2=i2,set flag=3. 
+                             Else--> mat[m1][m2] is printed.
+                           
+                           * 'break' terminates the inner while loop.
+                     (inner while loop runs as long as the trminating cnditions are not met)
+  
+   4.3.If flag=1,it implies that on scanning the 8 neighbours of cell mat[p1][p2],no '1's were found,which means that it is a disconnected matrix.
+         *'break' terminates the outer loop,i'e overall border tracking process is terminated.
+   
+   4.4.If flag=3,it implies initial starting position and is reached and successful scan is completed.
+         *'break' terminates the outer loop.
+   
+   4.5.Once the new position of a '1' found (m1,m2) by scanning the 8neighbours of mat[p1][p2],
+       it is time to modify the value of m1 and m2 to find the new position from where circular scan of a new '8neighbors'is to start.
+       It is done by comparing m1 and m2 by p1 and p2 to determine the 45deg position cell.
+       
+      *using if-else constucts,the value of m1 and m2 is modified in such a way that the new postion mat[m1][m2] is at clockwise 45deg
+       inclination from the displacemnt vector from mat[p1][p2] to mat[m1(b4 modify)][m2(b4 modify)].
+
+   4.6.Set p1=temp1 and p2=temp2 (temp1=m1,temp=m2 which means mat[p1][p2] is actualy
+        
+     (Outer while loop runs as long as the trminating cnditions are not met)   
+   
+ 5.After outer while loop is terminated the value of m1,m2 and flag is checked to see if the entire circular border tracking has completed
+   successfully or terminated due to some anomaly and the appropriate message is printed.
+   If mat[m1][m2]=mat[i1][i2] (starting position cell),and flag=3,it indicates successful completion.     
+       
+
+   
